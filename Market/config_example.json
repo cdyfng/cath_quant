@@ -1,0 +1,38 @@
+{
+    "LOG": {
+        "console": true,
+        "level": "DEBUG",
+        "path": "/data/logs/servers/Market",
+        "name": "market.log",
+        "clear": true,
+        "backup_count": 5
+    },
+    "RABBITMQ": {
+        "host": "127.0.0.1",
+        "port": 5672,
+        "username": "test",
+        "password": "213456"
+    },
+    "PROXY": "http://127.0.0.1:1087",
+
+    "MARKETS": {
+        "okex_swap": {
+            "symbols": [
+                "BTC-USDT-SWAP"
+              ],
+            "channels": [
+                 "orderbook"
+            ]
+        },
+        "binance": {
+            "symbols": [
+                "BTC/USDT",
+                "BUSD/USDT",
+                "BTC/BUSD"
+              ],
+            "channels": [
+                 "orderbook"
+            ]
+        }
+    }
+}
