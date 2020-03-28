@@ -1,0 +1,19 @@
+{
+    "RABBITMQ": {
+        "host": "127.0.0.1",
+        "port": 5672,
+        "username": "rabbituser",
+        "password": "123456"
+    },
+    "PROXY": "http://127.0.0.1:1087",
+    "ACCOUNTS": [
+        {
+            "platform": "binance",
+            "account": "binance_user@gmail.com",
+            "access_key": "cf8495d565ef66e7dff9f98764da",
+            "secret_key": "c438a0b923820dcc509a6f75849b"
+        }
+    ],
+    "strategy": "BUSD_strategy",
+    "symbol": "BTC/BUSD"
+}
