@@ -24,13 +24,19 @@ class MyStrategy:
         """
         self.sender =sendmail.SendEmail(config.email.get("host"), config.email.get("port"), \
             config.email.get("username"), config.email.get("password"), config.email.get("to"))
-        self.low = 1.013
+        self.low = 1.0
         self.high = 1.0315
         self.low_count = 0
         self.high_count = 0
 
+        self.eos_low = 2.5
+        self.eos_high = 3.0
+        self.eos_low_count = 0
+        self.eos_high_count = 0
+
         # 订阅行情
         Market(const.MARKET_TYPE_ORDERBOOK, "okex","DAI/USDT", self.on_event_orderbook_update)
+        Market(const.MARKET_TYPE_ORDERBOOK, "okex","EOS/USDT", self.on_event_eos_orderbook_update)
 
     def say(self, s):
         os.system('say '+ s)
@@ -58,6 +64,32 @@ class MyStrategy:
             self.low_count = self.low_count + 1 
             logger.info(self.high, self.low, self.high_count, self.low_count)
             s = "Dai 已买入" + orderbook.bids[0][0]
+            await self.sender.send_c(s)
+            self.say(s)
+
+    async def on_event_eos_orderbook_update(self, orderbook: Orderbook):
+        """ 订单薄更新
+        """
+        ask1_price = float(orderbook.asks[0][0])  # 卖一价格
+        bid1_price = float(orderbook.bids[0][0])  # 买一价格
+
+        if ask1_price <= bid1_price:
+            logger.info('data error', orderbook)
+            return
+        logger.info('prices: ', ask1_price, bid1_price) 
+        if ask1_price > self.eos_high and self.eos_high_count % 100 == 0:
+            self.eos_low_count = 0
+            self.eos_high_count = self.eos_high_count + 1
+            logger.info(self.eos_high, self.eos_low, self.eos_high_count, self.eos_low_count)
+            s = "EOS 应卖出" + orderbook.asks[0][0]
+            await self.sender.send_c(s)
+            self.say(s)
+
+        if bid1_price < self.eos_low and self.eos_low_count % 100 == 0:
+            self.eos_high_count = 0
+            self.eos_low_count = self.eos_low_count + 1 
+            logger.info(self.eos_high, self.eos_low, self.eos_high_count, self.eos_low_count)
+            s = "EOS 应买入" + orderbook.bids[0][0]
             await self.sender.send_c(s)
             self.say(s)
 
